@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - MindTrack</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/output.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'sage-dark': '#4A675A',
+                        'sage-med': '#708F81',
+                        'slate-deep': '#4E657E',
+                        'stone-bg': '#F2F4F3',
+                        'charcoal': '#2D312E',
+                        'dark-bg': '#1c1c1b'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-stone-bg dark:bg-dark-bg text-charcoal dark:text-gray-200 transition-colors duration-300">
+
+    <header
+        class="bg-white dark:bg-dark-bg shadow-sm border-b border-gray-200 dark:border-gray-800 relative z-50 transition-colors">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="/" class="text-2xl font-bold text-sage-dark dark:text-white transition-colors">
+                MindTrack
+            </a>
+
+            <nav class="space-x-8 hidden md:flex items-center">
+                <a href="/dashboard"
+                    class="font-medium text-charcoal dark:text-gray-300 hover:text-sage-dark transition-colors">Dashboard</a>
+                <a href="/habits"
+                    class="font-medium text-charcoal dark:text-gray-300 hover:text-sage-dark transition-colors">Habits</a>
+                <a href="/mood"
+                    class="font-medium text-charcoal dark:text-gray-300 hover:text-sage-dark transition-colors">Mood
+                    Check-In</a>
+                <a href="/history"
+                    class="font-medium text-charcoal dark:text-gray-300 hover:text-sage-dark transition-colors">History</a>
+
+                <div class="flex items-center gap-4 ml-4 border-l pl-4 border-gray-200 dark:border-gray-700">
+                    <% if (locals.user) { %>
+                        <a href="/logout-success" class="font-bold text-sage-dark dark:text-sage-med">Logout</a>
+                        <% } else { %>
+                            <a href="/login"
+                                class="text-sage-dark dark:text-sage-med font-semibold hover:underline">Login</a>
+                            <a href="/signup" class="bg-sage-dark text-white px-4 py-2 rounded-lg font-bold">Sign Up</a>
+                            <% } %>
+                                <button id="theme-toggle"
+                                    class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors">
+                                    <span id="theme-toggle-icon">🌙</span>
+                                </button>
+                </div>
+            </nav>
+
+            <div class="md:hidden flex items-center gap-4">
+                <button id="theme-toggle-mobile"
+                    class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                    <span id="theme-toggle-icon-mobile">🌙</span>
+                </button>
+                <button id="mobile-menu-button" class="text-charcoal dark:text-white focus:outline-none p-2">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"></path>
+                        <path id="close-icon" class="hidden" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div id="mobile-menu"
+            class="hidden md:hidden bg-white dark:bg-dark-bg border-b border-gray-200 dark:border-gray-800 absolute w-full left-0 shadow-xl z-40">
+            <nav class="flex flex-col p-6 space-y-4">
+                <a href="/dashboard"
+                    class="text-lg font-bold text-charcoal dark:text-gray-200 border-b border-gray-50 dark:border-gray-800 pb-2">Dashboard</a>
+                <a href="/habits"
+                    class="text-lg font-bold text-charcoal dark:text-gray-200 border-b border-gray-50 dark:border-gray-800 pb-2">Habits</a>
+                <a href="/mood"
+                    class="text-lg font-bold text-charcoal dark:text-gray-200 border-b border-gray-50 dark:border-gray-800 pb-2">Mood
+                    Check-In</a>
+                <a href="/history"
+                    class="text-lg font-bold text-charcoal dark:text-gray-200 hover:text-sage-dark">History</a>
+                <div class="pt-4 border-t border-gray-100 dark:border-gray-700 flex flex-col gap-3">
+                    <% if (locals.user) { %>
+                        <a href="/logout"
+                            class="text-center font-bold text-white py-3 rounded-xl bg-sage-dark dark:bg-red-900/20">Logout</a>
+                        <% } else { %>
+                            <a href="/login"
+                                class="text-center font-bold text-sage-dark dark:text-sage-med py-3 rounded-xl border border-sage-dark">Login</a>
+                            <a href="/signup" class="text-center font-bold text-white py-3 rounded-xl bg-sage-dark">Sign
+                                Up</a>
+                            <% } %>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="max-w-4xl mx-auto mt-10 px-6">
+        <div class="mb-10">
+            <h1 class="text-2xl font-bold text-sage-dark dark:text-white transition-colors">Welcome, <%= user.name %>!
+            </h1>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Ready to track your progress today?</p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+            <div
+                class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 text-center transition-colors">
+                <h3 class="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 font-bold mb-1">Streak</h3>
+                <p class="text-2xl font-black text-sage-dark dark:text-sage-med">
+                    <%= currentStreak %>
+                        <%= currentStreak===1? 'day' : 'days' %>
+                </p>
+            </div>
+            <div
+                class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 text-center transition-colors">
+                <h3 class="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 font-bold mb-1">Today</h3>
+                <p class="text-2xl font-black text-slate-deep dark:text-slate-300">
+                    <%= completedToday %>
+                </p>
+            </div>
+            <div
+                class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 text-center transition-colors">
+                <h3 class="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 font-bold mb-1">Weekly</h3>
+                <p class="text-2xl font-black text-sage-dark dark:text-sage-med">
+                    <%= weeklyProgress %>%
+                </p>
+            </div>
+            <div
+                class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 text-center transition-colors">
+                <h3 class="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 font-bold mb-1">Monthly
+                </h3>
+                <p class="text-2xl font-black text-slate-deep dark:text-slate-300">
+                    <%= overallProgress %>%
+                </p>
+            </div>
+        </div>
+
+        <div
+            class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 mb-8 transition-colors">
+            <h2 class="text-xl font-bold mb-6 text-charcoal dark:text-white">Today's Rituals</h2>
+
+            <form action="/add-habit" method="POST" class="flex flex-col md:flex-row gap-3 mb-8">
+                <div class="flex-grow">
+                    <input type="text" name="habitName" placeholder="What is your next small step?" required
+                        class="border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white border px-4 py-3 rounded-xl w-full focus:ring-2 focus:ring-sage-med focus:outline-none transition-colors">
+                </div>
+                <!-- <div class="w-full md:w-48">
+                    <input type="time" name="reminderTime" required
+                        class="border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white border px-4 py-3 rounded-xl w-full focus:ring-2 focus:ring-sage-med focus:outline-none transition-colors">
+                </div> -->
+                <button type="submit"
+                    class="bg-sage-dark text-white px-6 py-3 rounded-xl font-bold hover:bg-opacity-90 transition shadow-sm whitespace-nowrap">
+                    Add Habit
+                </button>
+            </form>
+
+            <ul class="space-y-4">
+                <% if (!habits || habits.length===0) { %>
+                    <p class="text-gray-400 dark:text-gray-500 italic">Your habit list is empty. Start small!</p>
+                    <% } %>
+
+                        <% habits.forEach(function(habit) { const today=new Date(); today.setHours(0,0,0,0); const
+                            isCompletedToday=habit.completedDates.some(date=> {
+                            const d = new Date(date);
+                            d.setHours(0,0,0,0);
+                            return d.getTime() === today.getTime();
+                            });
+
+                            let colorClasses = "border-gray-50 dark:border-gray-800 bg-stone-bg/50 dark:bg-white/5";
+                            %>
+                            <li
+                                class="flex justify-between items-center p-4 rounded-xl border-l-4 transition-all duration-300 <%= colorClasses %>">
+                                <div class="flex flex-col">
+                                    <span class="font-bold text-charcoal dark:text-gray-200 capitalize">
+                                        <%= habit.name %>
+                                    </span>
+                                    <% if(habit.reminderTime) { %>
+                                        <span
+                                            class="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-1">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                            </svg>
+                                            <%= habit.reminderTime %>
+                                        </span>
+                                        <% } %>
+                                </div>
+
+                                <div class="flex gap-3">
+                                    <% if (!isCompletedToday) { %>
+                                        <form action="/complete-habit/<%= habit._id %>" method="POST">
+                                            <button
+                                                class="bg-sage-dark text-white px-4 py-2 rounded-lg font-bold hover:shadow-md transition">Complete</button>
+                                        </form>
+                                        <% } else { %>
+                                            <button disabled
+                                                class="bg-gray-300 dark:bg-gray-600 text-white px-4 py-2 rounded-lg cursor-not-allowed font-bold">Done
+                                                ✓</button>
+                                            <% } %>
+
+                                                <form action="/delete-habit/<%= habit._id %>" method="POST">
+                                                    <button
+                                                        class="text-gray-400 dark:text-gray-500 hover:text-red-500 px-2 py-2 transition">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                        </svg>
+                                                    </button>
+                                                </form>
+                                </div>
+                            </li>
+                            <% }) %>
+            </ul>
+        </div>
+    </div>
+
+    <footer
+        class="bg-white dark:bg-dark-bg border-t border-gray-100 dark:border-gray-800 mt-20 py-10 transition-colors">
+        <div
+            class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-gray-400 text-sm">
+            <p class="font-bold text-sage-dark dark:text-white text-lg">MindTrack</p>
+            <p>© 2026 MindTrack.</p>
+        </div>
+    </footer>
+
+    <script>
+        const themeToggleBtns = [document.getElementById('theme-toggle'), document.getElementById('theme-toggle-mobile')];
+        const themeIcons = [document.getElementById('theme-toggle-icon'), document.getElementById('theme-toggle-icon-mobile')];
+        const html = document.documentElement;
+
+        function updateThemeUI(isDark) {
+            themeIcons.forEach(icon => { if (icon) icon.innerText = isDark ? '☀️' : '🌙'; });
+        }
+
+        if (localStorage.getItem('color-theme') === 'dark') {
+            html.classList.add('dark');
+            updateThemeUI(true);
+        }
+
+        themeToggleBtns.forEach(btn => {
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    html.classList.toggle('dark');
+                    const isDark = html.classList.contains('dark');
+                    updateThemeUI(isDark);
+                    localStorage.setItem('color-theme', isDark ? 'dark' : 'light');
+                });
+            }
+        });
+
+        const menuBtn = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+</body>
+
+</html>

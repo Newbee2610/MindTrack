@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@theme {
+  --color-sage-dark: #4A675A;
+  --color-sage-med: #708F81;
+  --color-slate-deep: #4E657E;
+  --color-stone-bg: #F2F4F3;
+  --color-charcoal: #2D312E;
+}
+
+/* This makes the background change smoothly */
+@layer base {
+  body {
+    @apply transition-colors duration-300;
+  }
+}

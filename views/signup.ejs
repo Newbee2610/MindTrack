@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/output.css">
+    <title>Sign Up | MindTrack</title>
+</head>
+
+<body
+    class="bg-stone-bg min-h-screen flex items-center justify-center px-6 transition-colors duration-500 dark:bg-charcoal">
+
+    <div class="max-w-md w-full">
+        <div class="text-center mb-8">
+            <a href="/" class="text-2xl font-bold text-sage-dark dark:text-sage-med tracking-tight">MindTrack</a>
+        </div>
+
+        <div
+            class="bg-white dark:bg-slate-deep p-10 rounded-[2.5rem] shadow-sm border border-gray-100 dark:border-none transition-colors">
+            <h2 class="text-2xl font-bold text-charcoal dark:text-stone-bg mb-2 text-center">Create Account</h2>
+            <p class="text-gray-500 dark:text-gray-400 text-center mb-8 text-sm">Start your journey of mindfulness.</p>
+
+            <form action="/signup" method="POST" class="space-y-5">
+                <% if (locals.error) { %>
+                    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded shadow-sm flex items-center shadow-red-100/50"
+                        role="alert">
+                        <svg class="h-5 w-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <p class="font-bold text-sm">
+                            <%= error %>
+                        </p>
+                    </div>
+                    <% } %>
+
+                        <div>
+                            <label
+                                class="block text-xs font-black uppercase tracking-widest text-gray-400 mb-2 ml-1">Full
+                                Name</label>
+                            <input type="text" name="name" placeholder="Full Name" required
+                                class="w-full bg-stone-bg dark:bg-charcoal border-none p-4 rounded-2xl focus:ring-2 focus:ring-sage-med focus:outline-none placeholder:text-gray-300 dark:text-white">
+                        </div>
+
+                        <div>
+                            <label
+                                class="block text-xs font-black uppercase tracking-widest text-gray-400 mb-2 ml-1">Email
+                                Address</label>
+                            <input type="email" name="email" placeholder="name@example.com" required
+                                class="w-full bg-stone-bg dark:bg-charcoal border-none p-4 rounded-2xl focus:ring-2 focus:ring-sage-med focus:outline-none placeholder:text-gray-300 dark:text-white">
+                        </div>
+
+                        <div>
+                            <label
+                                class="block text-xs font-black uppercase tracking-widest text-gray-400 mb-2 ml-1">Password</label>
+                            <input type="password" name="password" placeholder="••••••••" required
+                                class="w-full bg-stone-bg dark:bg-charcoal border-none p-4 rounded-2xl focus:ring-2 focus:ring-sage-med focus:outline-none placeholder:text-gray-300 dark:text-white">
+                        </div>
+
+                        <div class="pt-4">
+                            <button type="submit"
+                                class="w-full bg-sage-dark text-white font-bold py-4 rounded-2xl shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer">
+                                Create Account
+                            </button>
+                        </div>
+            </form>
+
+            <div class="mt-8 pt-6 border-t border-gray-50 dark:border-sage-med/10 text-center">
+                <p class="text-gray-500 dark:text-gray-400 text-sm">
+                    Already have an account?
+                    <a href="/login" class="text-sage-dark dark:text-sage-med font-bold hover:underline ml-1">Login</a>
+                </p>
+            </div>
+        </div>
+
+        <p class="text-center mt-8 text-gray-400 text-xs">
+            © 2026 MindTrack. Simple habits, deeper awareness.
+        </p>
+    </div>
+
+</body>
+
+</html>

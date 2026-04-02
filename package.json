@@ -10,6 +10,15 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "express": "^5.2.1"
+    "@tailwindcss/cli": "^4.2.1",
+    "bcrypt": "^6.0.0",
+    "body-parser": "^2.2.2",
+    "ejs": "^4.0.1",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "mongoose": "^9.2.3",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^8.0.3",
+    "tailwindcss": "^4.2.1"
   }
 }

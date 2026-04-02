@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Add Habit - MindTrack</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'sage-dark': '#4A675A',
+                        'sage-med': '#708F81',
+                        'slate-deep': '#4E657E',
+                        'stone-bg': '#F2F4F3',
+                        'charcoal': '#2D312E',
+                        'dark-bg': '#1c1c1b'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-stone-bg dark:bg-dark-bg min-h-screen text-charcoal dark:text-gray-200 transition-colors duration-300">
+    <header
+        class="bg-white dark:bg-dark-bg shadow-sm border-b border-gray-200 dark:border-gray-800 relative z-50 transition-colors">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+
+            <a href="/" class="text-2xl font-bold text-sage-dark dark:text-white transition-colors">
+                MindTrack
+            </a>
+
+            <nav class="space-x-8 hidden md:flex items-center">
+                <a href="/dashboard"
+                    class="font-medium text-charcoal dark:text-gray-300 hover:text-sage-dark transition-colors">Dashboard</a>
+                <a href="/habits"
+                    class="font-medium text-charcoal dark:text-gray-300 hover:text-sage-dark transition-colors">Habits</a>
+                <a href="/mood"
+                    class="font-medium text-charcoal dark:text-gray-300 hover:text-sage-dark transition-colors">Mood
+                    Check-In</a>
+                <a href="/history"
+                    class="font-medium text-charcoal dark:text-gray-300 hover:text-sage-dark transition-colors">History</a>
+
+                <div class="flex items-center gap-4 ml-4 border-l pl-4 border-gray-200 dark:border-gray-700">
+                    <% if (locals.user) { %>
+                        <a href="/logout" class="text-center font-bold text-sage-dark dark:text-sage-med">
+                            Logout
+                        </a>
+                        <% } else { %>
+                            <a href="/login"
+                                class="text-sage-dark dark:text-sage-med font-semibold hover:underline">Login</a>
+                            <a href="/signup" class="bg-sage-dark text-white px-4 py-2 rounded-lg font-bold">Sign Up</a>
+                            <% } %>
+                                <button id="theme-toggle"
+                                    class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors">
+                                    <span id="theme-toggle-icon">🌙</span>
+                                </button>
+                </div>
+            </nav>
+
+            <div class="md:hidden flex items-center gap-4">
+                <button id="theme-toggle-mobile"
+                    class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                    <span id="theme-toggle-icon-mobile">🌙</span>
+                </button>
+                <button id="mobile-menu-button" class="text-charcoal dark:text-white focus:outline-none p-2">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"></path>
+                        <path id="close-icon" class="hidden" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div id="mobile-menu"
+            class="hidden md:hidden bg-white dark:bg-dark-bg border-b border-gray-200 dark:border-gray-800 absolute w-full left-0 shadow-xl z-40">
+            <nav class="flex flex-col p-6 space-y-4">
+                <a href="/dashboard"
+                    class="text-lg font-bold text-charcoal dark:text-gray-200 border-b border-gray-50 dark:border-gray-800 pb-2">Dashboard</a>
+                <a href="/habits"
+                    class="text-lg font-bold text-charcoal dark:text-gray-200 border-b border-gray-50 dark:border-gray-800 pb-2">Habits</a>
+                <a href="/mood"
+                    class="text-lg font-bold text-charcoal dark:text-gray-200 border-b border-gray-50 dark:border-gray-800 pb-2">Mood
+                    Check-In</a>
+                <a href="/history"
+                    class="text-lg font-bold text-charcoal dark:text-gray-200 hover:text-sage-dark">History</a>
+                <div class="pt-4 border-t border-gray-100 dark:border-gray-700 flex flex-col gap-3">
+                    <% if (locals.user) { %>
+                        <a href="/logout"
+                            class="text-center font-bold text-white py-3 rounded-xl bg-sage-dark dark:bg-red-900/20">Logout</a>
+                        <% } else { %>
+                            <a href="/login"
+                                class="text-center font-bold text-sage-dark dark:text-sage-med py-3 rounded-xl border border-sage-dark">Login</a>
+                            <a href="/signup" class="text-center font-bold text-white py-3 rounded-xl bg-sage-dark">Sign
+                                Up</a>
+                            <% } %>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="max-w-4xl mx-auto mt-12 px-6">
+        <div class="mb-10 text-center">
+            <h1 class="text-2xl md:text-3xl font-bold text-sage-dark dark:text-white">
+                Hi, <%= user.name %>!
+            </h1>
+            <p class="text-sm md:text-base text-gray-500 dark:text-gray-400">
+                Set your daily habits
+            </p>
+        </div>
+
+        <div class="text-center mb-10">
+            <h1 class="text-3xl font-bold text-charcoal dark:text-white">Design Your Ritual</h1>
+            <p class="text-gray-500 dark:text-gray-400 mt-2">Set an intention for your long-term growth.</p>
+        </div>
+
+        <form action="/add-longterm-habit" method="POST"
+            class="bg-white dark:bg-gray-800 p-10 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 max-w-2xl mx-auto mb-20 transition-colors">
+
+            <div class="space-y-8">
+                <div>
+                    <label class="block mb-2 font-bold text-sage-dark dark:text-sage-med">What habit do you want to
+                        build?</label>
+                    <input type="text" name="name" placeholder="e.g., Morning Meditation" required
+                        class="w-full border-b-2 border-gray-100 dark:border-gray-600 bg-transparent p-3 focus:border-sage-med focus:outline-none transition-colors text-lg dark:text-white">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <label class="block mb-2 font-bold text-sage-dark dark:text-sage-med">Frequency</label>
+                        <select name="frequency"
+                            class="w-full bg-stone-bg dark:bg-gray-700 border-none p-4 rounded-xl focus:ring-2 focus:ring-sage-med dark:text-white">
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block mb-2 font-bold text-sage-dark dark:text-sage-med">
+                            Reminder Time
+                        </label>
+                        <input type="time" name="reminderTime" required
+                            class="w-full bg-stone-bg dark:bg-gray-700 border-none p-4 rounded-xl focus:ring-2 focus:ring-sage-med dark:text-white accent-sage-dark">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <label class="block mb-2 font-bold text-sage-dark dark:text-sage-med">Category</label>
+                        <select name="category"
+                            class="w-full bg-stone-bg dark:bg-gray-700 border-none p-4 rounded-xl focus:ring-2 focus:ring-sage-med dark:text-white">
+                            <option>Health</option>
+                            <option>Fitness</option>
+                            <option>Learning</option>
+                            <option>Mindfulness</option>
+                            <option>Productivity</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block mb-2 font-bold text-sage-dark dark:text-sage-med">Color Theme</label>
+                        <select name="color"
+                            class="w-full bg-stone-bg dark:bg-gray-700 border-none p-4 rounded-xl focus:ring-2 focus:ring-sage-med dark:text-white">
+                            <option value="sage-dark">Sage Green</option>
+                            <option value="slate-deep">Slate Blue</option>
+                            <option value="sage-med">Soft Mint</option>
+                            <option value="charcoal">Charcoal</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="pt-6">
+                    <button
+                        class="w-full bg-sage-dark text-white font-bold px-6 py-4 rounded-2xl shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all">
+                        Save Habit
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <footer class="bg-white dark:bg-dark-bg border-t border-gray-100 dark:border-gray-800 py-10 transition-colors">
+        <div
+            class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-gray-400 text-sm">
+            <p class="font-bold text-sage-dark dark:text-white text-lg">MindTrack</p>
+            <p>© 2026 MindTrack.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- Theme Toggle Logic ---
+        const themeToggleBtns = [document.getElementById('theme-toggle'), document.getElementById('theme-toggle-mobile')];
+        const themeIcons = [document.getElementById('theme-toggle-icon'), document.getElementById('theme-toggle-icon-mobile')];
+        const html = document.documentElement;
+
+        function updateThemeUI(isDark) {
+            themeIcons.forEach(icon => {
+                if (icon) icon.innerText = isDark ? '☀️' : '🌙';
+            });
+        }
+
+        if (localStorage.getItem('color-theme') === 'dark') {
+            html.classList.add('dark');
+            updateThemeUI(true);
+        }
+
+        themeToggleBtns.forEach(btn => {
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    html.classList.toggle('dark');
+                    const isDark = html.classList.contains('dark');
+                    updateThemeUI(isDark);
+                    localStorage.setItem('color-theme', isDark ? 'dark' : 'light');
+                });
+            }
+        });
+
+        // --- Mobile Menu Toggle Logic ---
+        const menuBtn = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        const closeIcon = document.getElementById('close-icon');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            menuIcon.classList.toggle('hidden');
+            closeIcon.classList.toggle('hidden');
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) {
+                mobileMenu.classList.add('hidden');
+                menuIcon.classList.remove('hidden');
+                closeIcon.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+
+</html>

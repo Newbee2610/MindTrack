@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mood History - MindTrack</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'sage-dark': '#4A675A',
+                        'sage-med': '#708F81',
+                        'slate-deep': '#4E657E',
+                        'stone-bg': '#F2F4F3',
+                        'charcoal': '#2D312E',
+                        'dark-bg': '#1c1c1b'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-stone-bg dark:bg-dark-bg min-h-screen text-charcoal dark:text-gray-200 transition-colors duration-300">
+
+    <header
+        class="bg-white dark:bg-dark-bg shadow-sm border-b border-gray-200 dark:border-gray-800 relative z-50 transition-colors">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+
+            <a href="/" class="text-2xl font-bold text-sage-dark dark:text-white transition-colors">
+                MindTrack
+            </a>
+
+            <nav class="space-x-8 hidden md:flex items-center">
+                <a href="/dashboard"
+                    class="font-medium text-charcoal dark:text-gray-300 hover:text-sage-dark transition-colors">Dashboard</a>
+                <a href="/habits"
+                    class="font-medium text-charcoal dark:text-gray-300 hover:text-sage-dark transition-colors">Habits</a>
+                <a href="/mood"
+                    class="font-medium text-charcoal dark:text-gray-300 hover:text-sage-dark transition-colors">Mood
+                    Check-In</a>
+                <a href="/history"
+                    class="font-medium text-charcoal dark:text-gray-300 hover:text-sage-dark transition-colors">History</a>
+                <div class="flex items-center gap-4 ml-4 border-l pl-4 border-gray-200 dark:border-gray-700">
+                    <% if (locals.user) { %>
+                        <a href="/logout" class="text-center font-bold text-sage-dark dark:text-sage-med">
+                            Logout
+                        </a>
+                        <% } else { %>
+                            <a href="/login"
+                                class="text-sage-dark dark:text-sage-med font-semibold hover:underline">Login</a>
+                            <a href="/signup" class="bg-sage-dark text-white px-4 py-2 rounded-lg font-bold">Sign Up</a>
+                            <% } %>
+                                <button id="theme-toggle"
+                                    class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors">
+                                    <span id="theme-toggle-icon">🌙</span>
+                                </button>
+                </div>
+            </nav>
+
+            <div class="md:hidden flex items-center gap-4">
+                <button id="theme-toggle-mobile"
+                    class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                    <span id="theme-toggle-icon-mobile">🌙</span>
+                </button>
+                <button id="mobile-menu-button" class="text-charcoal dark:text-white focus:outline-none p-2">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"></path>
+                        <path id="close-icon" class="hidden" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div id="mobile-menu"
+            class="hidden md:hidden bg-white dark:bg-dark-bg border-b border-gray-200 dark:border-gray-800 absolute w-full left-0 shadow-xl z-40 transition-colors">
+            <nav class="flex flex-col p-6 space-y-4">
+                <a href="/dashboard"
+                    class="text-lg font-bold text-charcoal dark:text-gray-200 border-b border-gray-50 dark:border-gray-800 pb-2">Dashboard</a>
+                <a href="/habits"
+                    class="text-lg font-bold text-charcoal dark:text-gray-200 border-b border-gray-50 dark:border-gray-800 pb-2">Habits</a>
+                <a href="/mood"
+                    class="text-lg font-bold text-charcoal dark:text-gray-200 border-b border-gray-50 dark:border-gray-800 pb-2">Mood
+                    Check-In</a>
+                <a href="/history"
+                    class="text-lg font-bold text-charcoal dark:text-gray-200 hover:text-sage-dark">History</a>
+                <div class="pt-4 border-t border-gray-100 dark:border-gray-700 flex flex-col gap-3">
+                    <% if (locals.user) { %>
+                        <a href="/logout"
+                            class="text-center font-bold text-white py-3 rounded-xl bg-sage-dark dark:bg-red-900/20">Logout</a>
+                        <% } else { %>
+                            <a href="/login"
+                                class="text-center font-bold text-sage-dark dark:text-sage-med py-3 rounded-xl border border-sage-dark">Login</a>
+                            <a href="/signup" class="text-center font-bold text-white py-3 rounded-xl bg-sage-dark">Sign
+                                Up</a>
+                            <% } %>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-6 mt-10">
+
+        <div class="mb-10 text-center md:text-left">
+            <h2 class="text-3xl font-bold text-charcoal dark:text-white">
+                <%= user.name %>, have a look at your Journey!!
+            </h2>
+            <p class="text-gray-500 dark:text-gray-400">Reflecting on your past reflections.</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-10">
+
+            <div class="md:col-span-2 space-y-6">
+
+                <% if (moods.length===0) { %>
+                    <div
+                        class="bg-white dark:bg-gray-800 p-10 rounded-[2rem] shadow-sm text-center border border-gray-100 dark:border-gray-700">
+                        <p class="text-gray-400 italic font-medium">No mood entries yet. Your story begins today.</p>
+                        <a href="/mood"
+                            class="inline-block mt-4 text-sage-dark dark:text-sage-med font-bold underline">Add your
+                            first check-in</a>
+                    </div>
+                    <% } %>
+
+                        <% moods.forEach(function(entry) { %>
+                            <div
+                                class="bg-white dark:bg-gray-800 p-8 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 mb-6 transition-colors">
+                                <div class="flex justify-between items-start mb-4">
+                                    <div>
+                                        <h3 class="text-xl font-bold text-sage-dark dark:text-sage-med">
+                                            <%= entry.mood %>
+                                        </h3>
+                                        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">
+                                            <!-- <%= new Date(entry.date).toLocaleDateString('en-US', { month: 'long' ,
+                                                day: 'numeric' , year: 'numeric' }) %> -->
+                                            <%= new Date(entry.date).toLocaleDateString() %>
+                                        </p>
+                                    </div>
+                                    <div
+                                        class="bg-stone-bg dark:bg-gray-700 px-4 py-2 rounded-xl text-xs font-black text-slate-deep dark:text-slate-300">
+                                        ENERGY: <%= entry.energyLevel %>/5
+                                    </div>
+                                </div>
+
+                                <% if (entry.note) { %>
+                                    <p class="text-gray-600 dark:text-gray-300 italic mb-4">"<%= entry.note %>"</p>
+                                    <% } %>
+
+                                        <div class="flex gap-2 flex-wrap">
+                                            <% (entry.factors || []).forEach(function(f) { %>
+                                                <span
+                                                    class="bg-sage-med/10 dark:bg-sage-med/20 text-sage-dark dark:text-sage-med border border-sage-med/20 px-3 py-1 rounded-full text-xs font-bold">
+                                                    #<%= f %>
+                                                </span>
+                                                <% }) %>
+                                        </div>
+                            </div>
+                            <% }) %>
+            </div>
+
+
+            <div class="space-y-8">
+
+                <div class="bg-sage-dark p-8 rounded-[2rem] shadow-lg text-white">
+                    <h3 class="text-lg font-bold mb-6 border-b border-white/20 pb-2">Overview</h3>
+
+                    <div class="space-y-5">
+                        <div class="flex justify-between items-center">
+                            <span class="text-white/70 text-sm font-medium">Entries</span>
+                            <span class="text-xl font-bold">
+                                <%= totalEntries %>
+                            </span>
+                        </div>
+
+                        <div class="flex justify-between items-center">
+                            <span class="text-white/70 text-sm font-medium">Streak</span>
+                            <span class="text-xl font-bold text-stone-bg">
+                                <%= streak %> days
+                            </span>
+                        </div>
+
+                        <div class="flex justify-between items-center">
+                            <span class="text-white/70 text-sm font-medium">Typical Mood</span>
+                            <span class="text-xl font-bold">
+                                <%= mostCommon || "-" %>
+                            </span>
+                        </div>
+
+                        <div class="flex justify-between items-center">
+                            <span class="text-white/70 text-sm font-medium">Avg Energy</span>
+                            <span class="text-xl font-bold">
+                                <%= avgEnergy %>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div
+                    class="bg-white dark:bg-gray-800 p-8 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
+                    <h3 class="text-lg font-bold text-charcoal dark:text-white mb-6">Distribution</h3>
+
+                    <% if (totalEntries===0) { %>
+                        <p class="text-sm text-gray-400 italic">Quiet for now...</p>
+                        <% } %>
+
+                            <% for (let mood in moodCount) { %>
+                                <div class="mb-5">
+                                    <div
+                                        class="flex justify-between text-xs font-bold uppercase tracking-tighter mb-2 text-gray-500 dark:text-gray-400">
+                                        <span>
+                                            <%= mood %>
+                                        </span>
+                                        <span>
+                                            <%= Math.round((moodCount[mood] / totalEntries) * 100) %>%
+                                        </span>
+                                    </div>
+
+                                    <div class="w-full bg-stone-bg dark:bg-gray-700 h-2 rounded-full overflow-hidden">
+                                        <div class="bg-sage-med h-full rounded-full transition-all duration-1000"
+                                            style="width: <%= (moodCount[mood] / totalEntries) * 100 %>%">
+                                        </div>
+                                    </div>
+                                </div>
+                                <% } %>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer
+        class="bg-white dark:bg-dark-bg border-t border-gray-100 dark:border-gray-800 mt-20 py-10 transition-colors">
+        <div
+            class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-gray-400 text-sm">
+            <p class="font-bold text-sage-dark dark:text-white text-lg">MindTrack</p>
+            <p>© 2026 MindTrack.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- Theme Toggle Logic ---
+        const themeToggleBtns = [document.getElementById('theme-toggle'), document.getElementById('theme-toggle-mobile')];
+        const themeIcons = [document.getElementById('theme-toggle-icon'), document.getElementById('theme-toggle-icon-mobile')];
+        const html = document.documentElement;
+
+        function updateThemeUI(isDark) {
+            themeIcons.forEach(icon => {
+                if (icon) icon.innerText = isDark ? '☀️' : '🌙';
+            });
+        }
+
+        if (localStorage.getItem('color-theme') === 'dark') {
+            html.classList.add('dark');
+            updateThemeUI(true);
+        }
+
+        themeToggleBtns.forEach(btn => {
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    html.classList.toggle('dark');
+                    const isDark = html.classList.contains('dark');
+                    updateThemeUI(isDark);
+                    localStorage.setItem('color-theme', isDark ? 'dark' : 'light');
+                });
+            }
+        });
+
+        // --- Mobile Menu Toggle Logic ---
+        const menuBtn = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        const closeIcon = document.getElementById('close-icon');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            menuIcon.classList.toggle('hidden');
+            closeIcon.classList.toggle('hidden');
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) {
+                mobileMenu.classList.add('hidden');
+                menuIcon.classList.remove('hidden');
+                closeIcon.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+
+</html>
